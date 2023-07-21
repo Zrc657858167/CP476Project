@@ -24,7 +24,35 @@
     }
 
     if (isset($_POST['supp_updated'])) {
-        //$stmt->prepare(appendWHERE("UPDATE"))
+        // $_POST has the form u_s1, . . . , u_sn, s1, . . . , sn, supp_updated
+        // unset supp_updated. then the stuff with count() works
+        $str = "UPDATE " . $_POST['supp_updated'] . " SET ";
+        unset($_POST['supp_updated']);
+        foreach (array_slice($_POST, 0, count($_POST) / 2) as $key=>$value) {
+            if ($value) {
+                $str .= substr($key, 2) . " = :$key, ";
+            }
+        }
+
+        $str = substr($str, 0, -2);
+        $str .= " WHERE ";
+        foreach (array_slice($_POST, count($_POST) / 2) as $key=>$value) {
+            if ($value) {
+                $str .= "$key = :$key and ";
+            }
+        }
+        $str = substr($str, 0, -5);
+
+        echo $str;
+        $stmt = $conn->prepare($str);
+        $stmt->debugDumpParams();
+        foreach ($_POST as $key=>$value) {
+            if ($value) {
+                $stmt->bindValue($key, $value);
+            }
+        }
+        $stmt->debugDumpParams();
+        $stmt->execute();
     }
     ?>
 

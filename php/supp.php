@@ -29,7 +29,6 @@
                     <td><input type="text" name="u_email" placeholder="Email"></td>
                     <td><input type="submit" value="Update"></td>
                 </tr>
-                <input type="hidden" name="supp_updated" value="yes">
                 <?php  
                 echo '<input type="hidden" name="supp_id" value="' . $_POST['supp_id'] . '">';
                 echo '<input type="hidden" name="supp_name" value="' . $_POST['supp_name'] . '">';
@@ -37,6 +36,7 @@
                 echo '<input type="hidden" name="phone" value="' . $_POST['phone'] . '">';
                 echo '<input type="hidden" name="email" value="' . $_POST['email'] . '">';
                 ?>
+                <input type="hidden" name="supp_updated" value="supplier">
             </form>
             <tr>
                 <th>Supplier ID</th>
