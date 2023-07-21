@@ -23,36 +23,114 @@
         echo "Connection failed: " . $e->getMessage(); // is this helpful???
     }
 
-    if (isset($_POST['supp_updated'])) {
-        // $_POST has the form u_s1, . . . , u_sn, s1, . . . , sn, supp_updated
-        // unset supp_updated. then the stuff with count() works
-        $str = "UPDATE " . $_POST['supp_updated'] . " SET ";
-        unset($_POST['supp_updated']);
-        foreach (array_slice($_POST, 0, count($_POST) / 2) as $key=>$value) {
-            if ($value) {
-                $str .= substr($key, 2) . " = :$key, ";
-            }
+    // if (isset($_POST['supp_updated'])) {
+    //     $str = "UPDATE supplier";
+    //     $substr = "";
+    //     if ($_POST['supp_id']) {
+    //         $substr .= ''
+    //     }
+    // }
+
+    if (isset($_POST['supp_deleted'])) {
+        $substr = '';
+        if ($_POST['supp_id']) {
+            $substr .= 'supp_id = :supp_id, ';
+        }
+        if ($_POST['supp_name']) {
+            $substr .= 'supp_name = :supp_name';
+        }
+        if ($_POST['address']) {
+            $substr .= 'address = :address, ';
+        }
+        if ($_POST['phone']) {
+            $substr .= 'phone = :phone, ';
+        }
+        if ($_POST['email']) {
+            $substr .= 'email = :email, ';
         }
 
-        $str = substr($str, 0, -2);
-        $str .= " WHERE ";
-        foreach (array_slice($_POST, count($_POST) / 2) as $key=>$value) {
-            if ($value) {
-                $str .= "$key = :$key and ";
+        if ($substr) {
+            $str = 'DELETE FROM supplier WHERE ' . $substr;
+            substr($str, 0, -2);
+            $stmt = $conn->prepare($str);
+            if ($_POST['supp_id']) {
+                $stmt->bindValue('supp_id', $_POST['supp_id']);
             }
-        }
-        $str = substr($str, 0, -5);
+            if ($_POST['supp_name']) {
+                $stmt->bindValue('supp_name', $_POST['supp_name']);
+            }
+            if ($_POST['address']) {
+                $stmt->bindValue('address', $_POST['address']);
+            }
+            if ($_POST['phone']) {
+                $stmt->bindValue('phone', $_POST['phone']);
+            }
+            if ($_POST['email']) {
+                $stmt->bindValue('email', $_POST['email']);
+            }
+            try {
+                $stmt->execute();
+            } catch (PDOException) {
+                echo "Cannot delete these rows while their values of the primary key Supplier ID are the values of the foreign key Supplier ID of some rows in the Product table.";
+            }
+        } 
+    }
 
-        echo $str;
-        $stmt = $conn->prepare($str);
-        $stmt->debugDumpParams();
-        foreach ($_POST as $key=>$value) {
-            if ($value) {
-                $stmt->bindValue($key, $value);
-            }
+    if (isset($_POST['supp_deleted'])) {
+        $substr = '';
+        if ($_POST['prod_id']) {
+            $substr .= 'prod_id = :prod_id, ';
         }
-        $stmt->debugDumpParams();
-        $stmt->execute();
+        if ($_POST['prod_name']) {
+            $substr .= 'prod_name = :prod_name';
+        }
+        if ($_POST['description']) {
+            $substr .= 'description = :description, ';
+        }
+        if ($_POST['price']) {
+            $substr .= 'price = :price, ';
+        }
+        if ($_POST['quantity']) {
+            $substr .= 'quantity = :quantity, ';
+        }
+        if ($_POST['status']) {
+            $substr .= 'status = :status, ';
+        }
+        if ($_POST['supp_id']) {
+            $substr .= 'supp_id= :supp_id, ';
+        }
+
+        if ($substr) {
+            $str = 'DELETE FROM supplier WHERE ' . $substr;
+            substr($str, 0, -2);
+            $stmt = $conn->prepare($str);
+            if ($_POST['prod_id']) {
+                $stmt->bindValue('prod_id', $_POST['prod_id']);
+            }
+            if ($_POST['prod_name']) {
+                $stmt->bindValue('prod_name', $_POST['prod_name']);
+            }
+            if ($_POST['description']) {
+                $stmt->bindValue('description', $_POST['description']);
+            }
+            if ($_POST['price']) {
+                $stmt->bindValue('price', $_POST['price']);
+            }
+            if ($_POST['quantity']) {
+                $stmt->bindValue('quantity', $_POST['quantity']);
+            }
+            if ($_POST['status']) {
+                $stmt->bindValue('status', $_POST['status']);
+            }
+            if ($_POST['supp_id']) {
+                $stmt->bindValue('supp_id', $_POST['supp_id']);
+            }
+            try {
+                $stmt->execute();
+            } catch (PDOException) {
+                echo "Cannot delete these rows while their values of the primary key Supplier ID are the values of the foreign key Supplier ID of some rows in the Product table.";
+            }
+        } 
     }
     ?>
 
