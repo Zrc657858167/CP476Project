@@ -75,8 +75,7 @@
 
         if ($substr) {
             $str = 'DELETE FROM supplier WHERE ' . $substr;
-            substr($str, 0, -2);
-            $stmt = $conn->prepare($str);
+            $stmt = $conn->prepare(substr($str, 0, -2));
             if ($_POST['supp_id']) {
                 $stmt->bindValue('supp_id', $_POST['supp_id']);
             }
@@ -100,7 +99,7 @@
         } 
     }
 
-    if (isset($_POST['supp_deleted'])) {
+    if (isset($_POST['prod_deleted'])) {
         $substr = '';
         if ($_POST['prod_id']) {
             $substr .= 'prod_id = :prod_id, ';
@@ -121,13 +120,12 @@
             $substr .= 'status = :status, ';
         }
         if ($_POST['supp_id']) {
-            $substr .= 'supp_id= :supp_id, ';
+            $substr .= 'supp_id = :supp_id, ';
         }
 
         if ($substr) {
-            $str = 'DELETE FROM supplier WHERE ' . $substr;
-            substr($str, 0, -2);
-            $stmt = $conn->prepare($str);
+            $str = 'DELETE FROM product WHERE ' . $substr;
+            $stmt = $conn->prepare(substr($str, 0, -2));
             if ($_POST['prod_id']) {
                 $stmt->bindValue('prod_id', $_POST['prod_id']);
             }
@@ -149,11 +147,7 @@
             if ($_POST['supp_id']) {
                 $stmt->bindValue('supp_id', $_POST['supp_id']);
             }
-            try {
-                $stmt->execute();
-            } catch (PDOException) {
-                echo "Cannot delete these rows while their values of the primary key Supplier ID are the values of the foreign key Supplier ID of some rows in the Product table.";
-            }
+            $stmt->execute();
         } 
     }
     ?>
