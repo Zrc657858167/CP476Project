@@ -3,7 +3,31 @@
 <head>
     <title>Main Page</title>
     <style>
-        /* Add your CSS here */
+        /* css */
+        form {
+            padding: 10px;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            border-right: 1px solid #ddd;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
     </style>
 </head>
 <body>
@@ -171,8 +195,8 @@
         <tr>
             <th>Product ID</th>
             <th>Product name</th>
-            <th>Quantity</th>
-            <th>Price</th>
+            <th style="text-align: right; padding-right: 30px; width: 80px;">Quantity</th>
+            <th style="text-align: right; padding-right: 50px; width: 150px;">Price</th>
             <th>Status</th>
             <th>Supplier name</th>
         </tr>
@@ -187,8 +211,8 @@
             echo "<tr>";
             echo "<td>" . htmlspecialchars($row['prod_id']) . "</td>";
             echo "<td>" . htmlspecialchars($row['prod_name']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['quantity']) . "</td>";
-            echo "<td>" . htmlspecialchars($row['price']) . "</td>";
+            echo "<td style=\"text-align: right; padding-right: 30px; width: 80px;\">" . htmlspecialchars($row['quantity']) . "</td>";
+            echo "<td style=\"text-align: right; padding-right: 50px; width: 150px;\">" . htmlspecialchars($row['price']) . "</td>";
             echo "<td>" . htmlspecialchars($row['status']) . "</td>";
             echo "<td>" . htmlspecialchars($row['supp_name']) . "</td>";
             echo "</tr>";
