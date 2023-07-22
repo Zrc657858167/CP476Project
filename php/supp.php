@@ -22,11 +22,11 @@
             </form>
             <form action=user.php method="POST">
                 <tr>
-                    <td><input type="text" name="u_supp_id" placeholder="Supplier ID"></td>
-                    <td><input type="text" name="u_supp_name" placeholder="Supplier name"></td>
-                    <td><input type="text" name="u_address" placeholder="Address"></td>
-                    <td><input type="text" name="u_phone" placeholder="Phone"></td>
-                    <td><input type="text" name="u_email" placeholder="Email"></td>
+                    <td><input type="text" name="u_supp_id" placeholder="Supplier ID" maxlength=4></td>
+                    <td><input type="text" name="u_supp_name" placeholder="Supplier name" maxlength=35></td>
+                    <td><input type="text" name="u_address" placeholder="Address" maxlength=35></td>
+                    <td><input type="tel" name="u_phone" placeholder="Phone" maxlength=20></td>
+                    <td><input type="email" name="u_email" placeholder="Email" maxlength=254></td>
                     <td><input type="submit" value="Update"></td>
                 </tr>
                 <?php  
@@ -47,9 +47,13 @@
             </tr>
             <?php
             require_once "init.php";
-            $stmt = $conn->prepare(appendWHERE("SELECT * FROM supplier", $_POST));
-            bindCols($stmt, $_POST);
+            $a = array();
+            $keys = array('supp_id', 'supp_name', 'address', 'phone', 'email');
+            assocAppend($a, $_POST, $keys);
+            $stmt = $conn->prepare(appendWHERE("SELECT * FROM supplier", $a));
+            bindCols($stmt, $a);
             $stmt->execute();
+            // echo '<input type="hidden" name="supp_rows" value="' . $stmt->rowCount() . '">';
             formatRows($stmt);
             ?>
         </table>

@@ -24,13 +24,13 @@
             </form>
             <form action=user.php method="POST">
                 <tr>
-                    <td><input type="text" name="u_prod_id" placeholder="Product ID"></td>
-                    <td><input type="text" name="u_prod_name" placeholder="Product name"></td>
-                    <td><input type="text" name="u_description" placeholder="Description"></td>
-                    <td><input type="text" name="u_price" placeholder="Price"></td>
-                    <td><input type="text" name="u_quantity" placeholder="Quantity"></td>
-                    <td><input type="text" name="u_status" placeholder="Status"></td>
-                    <td><input type="text" name="u_supp_id" placeholder="Supplier ID"></td>
+                    <td><input type="text" name="u_prod_id" placeholder="Product ID" maxlength=4></td>
+                    <td><input type="text" name="u_prod_name" placeholder="Product name" maxlength=20></td>
+                    <td><input type="text" name="u_description" placeholder="Description" maxlength=35></td>
+                    <td><input type="number" name="u_price" placeholder="Price" step=0.01 max=9999.99 min=-9999.99></td>
+                    <td><input type="number" name="u_quantity" placeholder="Quantity" max=65535 min=0></td>
+                    <td><input type="text" name="u_status" placeholder="Status" maxlength=1></td>
+                    <td><input type="text" name="u_supp_id" placeholder="Supplier ID" maxlength=4></td>
                     <td><input type="submit" value="Update"></td>
                 </tr>
                 <?php
@@ -56,9 +56,13 @@
             <?php
             // phpcs:disable PEAR.Commenting
             require_once "init.php";
-            $stmt = $conn->prepare(appendWHERE("SELECT * FROM product", $_POST));
-            bindCols($stmt, $_POST);
+            $a = array();
+            $keys = array('prod_id', 'prod_name', 'description', 'price', 'quantity', 'status', 'supp_id');
+            assocAppend($a, $_POST, $keys);
+            $stmt = $conn->prepare(appendWHERE("SELECT * FROM product", $a));
+            bindCols($stmt, $a);
             $stmt->execute();
+            // echo '<input type="hidden" name="prod_rows" value="' . $stmt->rowCount() . '">';
             formatRows($stmt);
             ?>
         </table>
