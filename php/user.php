@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Main Page</title>
     <style>
@@ -8,12 +9,14 @@
             padding: 10px;
             border-radius: 5px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        th, td {
+        th,
+        td {
             padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
@@ -30,6 +33,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <?php
@@ -46,8 +50,16 @@
         try {
             $stmt->execute();
         } catch (PDOException $e) {
-            echo $e->getMessage();
-            // echo "Can't delete rows with this value of supp_id while it exists as the value of the foreign key of some row in the product table";
+            if ($e->getCode() === '23000') {
+                // Can't delete rows with this value of supp_id while it exists as the value of the foreign key of some row in the product table
+                echo '<script type="text/javascript">';
+                echo 'alert("Delete failed: there exist product(s) with this supplier");';
+                echo '</script>';
+            } else {
+                echo '<script type="text/javascript">';
+                echo 'alert("Error: ' . $e->getMessage() . '");';
+                echo '</script>';
+            }
         }
     }
 
@@ -67,14 +79,14 @@
             //     // if supp_id is being updated, and there are multiple rows, then it will make duplicates, which isn't allowed for supp_id
             //     // if no rows were selected, then there's nothing to update
             //     if () {
-                
+
             //     }
             //     $sql = $conn->prepare("SELECT* FROM supplier WHERE supp_id = ?");
             //     $sql->bindValue(1, $updated['u_supp_id']);
             // }
 
             $str = "UPDATE supplier SET ";
-            foreach ($updated as $key=>$value) {
+            foreach ($updated as $key => $value) {
                 // during the bind phase step later on: need to bind key to value from $updated
                 // Example: bind :u_supp_id to $updated['u_supp_id']
                 // just need to turn the string to supp_id = :u_supp_id
@@ -88,8 +100,16 @@
             try {
                 $stmt->execute();
             } catch (PDOException $e) {
-                // echo "Can't modify the value of supp_id while it exists as the value of the foreign key of some row in the product table.";
-                echo $e->getMessage();
+                if ($e->getCode() === '23000') {
+                    // echo "Can't modify the value of supp_id while it exists as the value of the foreign key of some row in the product table.";
+                    echo '<script type="text/javascript">';
+                    echo 'alert("Delete failed: can not change Supplier ID because it is used as a foreign key");';
+                    echo '</script>';
+                } else {
+                    echo '<script type="text/javascript">';
+                    echo 'alert("Error: ' . $e->getMessage() . '");';
+                    echo '</script>';
+                }
             }
         }
     }
@@ -116,10 +136,10 @@
         $updated = array();
         $updated_keys = array('u_prod_id', 'u_prod_name', 'u_description', 'u_price', 'u_quantity', 'u_status', 'u_supp_id');
         assocAppend($updated, $_POST, $updated_keys);
-        
+
         if ($updated) {
             $str = "UPDATE product SET ";
-            foreach ($updated as $key=>$value) {
+            foreach ($updated as $key => $value) {
                 $str .= substr($key, 2) . " = :$key, ";
             }
             $str = substr($str, 0, -2);
@@ -135,7 +155,16 @@
             try {
                 $stmt->execute();
             } catch (PDOException $e) {
-                echo $e->getMessage();
+                if ($e->getCode() === '23000') {
+                    // echo "Can't modify the value of supp_id while it exists as the value of the foreign key of some row in the product table.";
+                    echo '<script type="text/javascript">';
+                    echo 'alert("Delete failed: can not change Product ID because it is used as a foreign key");';
+                    echo '</script>';
+                } else {
+                    echo '<script type="text/javascript">';
+                    echo 'alert("Error: ' . $e->getMessage() . '");';
+                    echo '</script>';
+                }
             }
         }
     }
@@ -158,7 +187,7 @@
         <input type="text" name="prod_id" placeholder="Product ID" maxlength=4>
         <input type="text" name="prod_name" placeholder="Product name" maxlength=20>
         <input type="text" name="description" placeholder="Description" maxlength=35>
-        <input type="number" name="price" placeholder="Price" step=0.01 max=9999.99 min=-9999.99> 
+        <input type="number" name="price" placeholder="Price" step=0.01 max=9999.99 min=-9999.99>
         <input type="number" name="quantity" placeholder="Quantity" max=65535 min=0>
         <input type="text" name="status" placeholder="Status" maxlength=1>
         <input type="text" name="supp_id" placeholder="Supplier ID" maxlength=4>
@@ -167,9 +196,9 @@
 
     <!-- Search results -->
     <?php
-        // if (isset($_POST['searched_supp'])) {
+    // if (isset($_POST['searched_supp'])) {
 
-        // }
+    // }
     ?>
 
     <!-- Display inventory table -->
@@ -183,7 +212,7 @@
             <th>Status</th>
             <th>Supplier name</th>
         </tr>
-        
+
         <?php
         // phpcs:disable PEAR.Commenting
         $stmt = $conn->query(
@@ -203,4 +232,5 @@
         ?>
     </table>
 </body>
+
 </html>

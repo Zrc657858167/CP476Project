@@ -1,6 +1,6 @@
 <?php
 // phpcs:disable PEAR.Commenting
-$dsn= "mysql:host=localhost;dbname=cp476project;charset=utf8mb4";
+$dsn= "mysql:host=localhost;dbname= project name ;charset=utf8mb4";
 $options = [
     PDO::ATTR_EMULATE_PREPARES => false, 
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, 
@@ -8,8 +8,9 @@ $options = [
 ];
 
 try {
-    $conn = new PDO($dsn, "root", "GcTQqD2V9tsCi8Vlz55D", $options);
+    $conn = new PDO($dsn, "root", "Your password", $options);
 }   catch(PDOException $e) {
+    echo "Connection failed";
 }
 
 /**
@@ -120,4 +121,3 @@ function formatRows(PDOStatement $stmt)
         echo "</tr>";
     }
 }
-?>
