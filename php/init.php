@@ -1,5 +1,7 @@
 <?php
 // phpcs:disable PEAR.Commenting
+
+// open database connection for other files to use
 $dsn = "mysql:host=localhost;dbname=cp476project;charset=utf8mb4";
 $options = [
     PDO::ATTR_EMULATE_PREPARES => false, 
@@ -25,10 +27,15 @@ try {
 // }
 
 /**
- * only appends non false entries. IDEA: change $keys to $target_keys
- * and make a new parameter called $source_keys=$target_keys (if this is allowed in php)
+ * Appends non false/non empty entries from $source to $target. 
+ * IDEA: change $keys to $target_keys and make a new parameter
+ * called $source_keys=$target_keys (if this is allowed in php).
+ * 
+ * @param array $target
+ * @param array $source
+ * @param array $keys An array of keys used to access source and name the keys of the new entries of $target
  */
-function assocAppend(&$target, &$source, &$keys)
+function assocAppend(array &$target, array &$source, array &$keys): void
 {
     foreach ($keys as $k) {
         if ($source[$k]) {
@@ -76,7 +83,12 @@ function assocAppend(&$target, &$source, &$keys)
 //     return $str;
 // }
 
-function appendWHERE(string $str, &$a)
+/**
+ * Appends the WHERE clause if $a is non empty.
+ * The statement parameters are named after the column, producing terms like $key = :$key.
+ * Intended for bindCols() to be used after to bind values to the statement parameters.
+ */
+function appendWHERE(string $str, array &$a): string
 {
     if ($a) {
         $str .= " WHERE ";
@@ -97,7 +109,12 @@ function appendWHERE(string $str, &$a)
 //     }
 // }
 
-function bindCols(PDOStatement $stmt, &$a)
+/**
+ * Binds values of $a to $stmt.
+ * Expects parameters to be named the way appendWHERE() names them.
+ * Expects $key = :$key so that bindValue($key, $value) can be used.
+ */
+function bindCols(PDOStatement $stmt, array &$a): void
 {
     foreach ($a as $key=>$value) {
         $stmt->bindValue($key, $value);
@@ -105,11 +122,11 @@ function bindCols(PDOStatement $stmt, &$a)
 }
 
 /**
- *  Echoes rows of a table within table tags in html
+ * Echoes rows of a table within table tags in html
  * 
  * @param $stmt should have been executed before calling this function
  */
-function formatRows(PDOStatement $stmt)
+function formatRows(PDOStatement $stmt): void
 {
     // are prepared statements enough? seems like html injections can get through. maybe even htmlspecialchars isn't enough?
     while ($row = $stmt->fetch($mode=PDO::FETCH_BOTH)) {

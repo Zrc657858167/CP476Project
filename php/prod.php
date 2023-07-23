@@ -35,18 +35,21 @@
 </head>
 
 <body>
-    <!-- Display product table -->
     <h3>Product</h3>
     <table>
+        <!-- Return home form -->
         <form action=user.php method="POST">
             Return to home <input type="submit" value="Home">
             <input type="hidden" name="prod_home" value="yes">
         </form>
+
+        <!-- Delete current selection form -->
         <form action=user.php method="POST">
             Delete current selection <input type="submit" value="Delete">
             <input type="hidden" name="prod_deleted" value="yes">
             <?php
-            // phpcs:disable PEAR.Commenting         
+            // phpcs:disable PEAR.Commenting    
+            // just a way of sending data back to user.php with POST     
             echo '<input type="hidden" name="prod_id" value="' . $_POST['prod_id'] . '">';
             echo '<input type="hidden" name="prod_name" value="' . $_POST['prod_name'] . '">';
             echo '<input type="hidden" name="description" value="' . $_POST['description'] . '">';
@@ -56,6 +59,8 @@
             echo '<input type="hidden" name="supp_id" value="' . $_POST['supp_id'] . '">';
             ?>
         </form>
+
+        <!-- Update current selection form -->
         <form action=user.php method="POST">
             <tr>
                 <td><input type="text" name="u_prod_id" placeholder="Product ID" maxlength=4></td>
@@ -82,13 +87,14 @@
             <th>Product ID</th>
             <th>Product name</th>
             <th>Description</th>
-            <th>Price</th>
-            <th>Quantity</th>
+            <th style="text-align: right; padding-right: 50px; width: 150px;">Price</th>
+            <th style="text-align: right; padding-right: 30px; width: 80px;">Quantity</th>
             <th>Status</th>
             <th>Supplier ID</th>
         </tr>
+        
+        <!-- Display current selection -->
         <?php
-        // phpcs:disable PEAR.Commenting
         require_once "init.php";
         $a = array();
         $keys = array('prod_id', 'prod_name', 'description', 'price', 'quantity', 'status', 'supp_id');
@@ -96,7 +102,17 @@
         $stmt = $conn->prepare(appendWHERE("SELECT * FROM product", $a));
         bindCols($stmt, $a);
         $stmt->execute();
-        formatRows($stmt);
+        while ($row = $stmt->fetch()) {
+            echo "<tr>";
+            echo "<td>" . htmlspecialchars($row['prod_id']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['prod_name']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['description']) . "</td>";
+            echo "<td style=\"text-align: right; padding-right: 50px; width: 150px;\">" . htmlspecialchars($row['price']) . "</td>";
+            echo "<td style=\"text-align: right; padding-right: 30px; width: 80px;\">" . htmlspecialchars($row['quantity']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+            echo "<td>" . htmlspecialchars($row['supp_id']) . "</td>";
+            echo "</tr>";
+        }
         ?>
     </table>
 </body>

@@ -38,10 +38,13 @@
     <!-- Display supplier table -->
     <h3>Supplier</h3>
     <table>
+        <!-- Return home form -->
         <form action=user.php method="POST">
             Return to home <input type="submit" value="Home">
             <input type="hidden" name="supp_home" value="yes">
         </form>
+
+        <!-- Delete current selection form -->
         <form action=user.php method="POST">
             Delete current selection <input type="submit" value="Delete">
             <input type="hidden" name="supp_deleted" value="yes">
@@ -54,6 +57,8 @@
             echo '<input type="hidden" name="email" value="' . $_POST['email'] . '">';
             ?>
         </form>
+
+        <!-- Update current selection form -->
         <form action=user.php method="POST">
             <tr>
                 <td><input type="text" name="u_supp_id" placeholder="Supplier ID" maxlength=4></td>
@@ -79,6 +84,8 @@
             <th>Phone</th>
             <th>Email</th>
         </tr>
+
+        <!-- Display current selection -->
         <?php
         require_once "init.php";
         $a = array();
