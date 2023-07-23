@@ -138,3 +138,32 @@ function formatRows(PDOStatement $stmt): void
         echo "</tr>";
     }
 }
+
+// function build_update_stmt(&$old_key_names, &$updated_key_names, $table_name) {
+//     global $conn;
+//     $old = array();
+//     assocAppend($old, $_POST, $old_keys_names);
+//     $updated = array();
+//     assocAppend($updated, $_POST, $updated_key_names);
+
+//     $stmt;
+//     if ($updated) {
+//         $str = "UPDATE supplier SET ";
+//         foreach ($updated as $key => $value) {
+//             // during the bind step later on: need to bind key to value from $updated
+//             // Example: bind :u_supp_id to $updated['u_supp_id']
+//             // just need to turn the string to supp_id = :u_supp_id
+//             // use substr rather than using $old. the keys of $old likely won't match the keys of $updated
+//             $str .= substr($key, 2) . " = :$key, ";
+//         }
+//         $str = substr($str, 0, -2);
+//         $stmt = $conn->prepare(appendWHERE($str, $old));
+//         bindCols($stmt, $updated);
+//         bindCols($stmt, $old);
+//     } else {
+//         $stmt = null;
+//     }
+//     return $stmt;
+// }
+
+?>
