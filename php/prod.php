@@ -96,7 +96,6 @@
         $stmt = $conn->prepare(appendWHERE("SELECT * FROM product", $a));
         bindCols($stmt, $a);
         $stmt->execute();
-        // echo '<input type="hidden" name="prod_rows" value="' . $stmt->rowCount() . '">';
         formatRows($stmt);
         ?>
     </table>

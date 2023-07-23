@@ -50,16 +50,16 @@
         try {
             $stmt->execute();
         } catch (PDOException $e) {
-            if ($e->getCode() === '23000') {
-                // Can't delete rows with this value of supp_id while it exists as the value of the foreign key of some row in the product table
-                echo '<script type="text/javascript">';
-                echo 'alert("Delete failed: there exist product(s) with this supplier");';
-                echo '</script>';
+            $msg;
+            $errorInfo = $e->errorInfo;
+            if ($errorInfo[0] == '23000' && $errorInfo[1] == '1451') {
+                $msg = "Cannot delete a parent row: the value of primary key Supplier ID matches the value of the foreign key referenced by it and should not be deleted unless its child row is deleted.";
             } else {
-                echo '<script type="text/javascript">';
-                echo 'alert("Error: ' . $e->getMessage() . '");';
-                echo '</script>';
+                $msg = $e->getMessage();
             }
+            echo '<script type="text/javascript">';
+            echo 'alert("' . $msg . '");';
+            echo '</script>';
         }
     }
 
@@ -73,21 +73,9 @@
         assocAppend($updated, $_POST, $updated_keys);
 
         if ($updated) {
-            // // if supp_id is being updated and it's not just being changed to its current value
-            // // isset($updated['u_supp_id']) && !(isset($old['supp_id']) && $old['supp_id'] == $updated['u_supp_id'])
-            // if (isset($updated['u_supp_id']) && $_POST['supp_rows'] == 1) {
-            //     // if supp_id is being updated, and there are multiple rows, then it will make duplicates, which isn't allowed for supp_id
-            //     // if no rows were selected, then there's nothing to update
-            //     if () {
-
-            //     }
-            //     $sql = $conn->prepare("SELECT* FROM supplier WHERE supp_id = ?");
-            //     $sql->bindValue(1, $updated['u_supp_id']);
-            // }
-
             $str = "UPDATE supplier SET ";
             foreach ($updated as $key => $value) {
-                // during the bind phase step later on: need to bind key to value from $updated
+                // during the bind step later on: need to bind key to value from $updated
                 // Example: bind :u_supp_id to $updated['u_supp_id']
                 // just need to turn the string to supp_id = :u_supp_id
                 // use substr rather than using $old. the keys of $old likely won't match the keys of $updated
@@ -100,16 +88,18 @@
             try {
                 $stmt->execute();
             } catch (PDOException $e) {
-                if ($e->getCode() === '23000') {
-                    // echo "Can't modify the value of supp_id while it exists as the value of the foreign key of some row in the product table.";
-                    echo '<script type="text/javascript">';
-                    echo 'alert("Delete failed: can not change Supplier ID because it is used as a foreign key");';
-                    echo '</script>';
+                $msg;
+                $errorInfo = $e->errorInfo;
+                if ($errorInfo[0] == '23000' && $errorInfo[1] == '1451') {
+                    $msg = "Cannot update a parent row: the value of primary key Supplier ID matches the value of the foreign key referenced by it and should not be changed unless its child row is deleted.";
+                } else if ($errorInfo[0] == '23000' && $errorInfo[1] == '1062') {
+                    $msg = $errorInfo[2] . ". Primary key Supplier ID must be unique.";
                 } else {
-                    echo '<script type="text/javascript">';
-                    echo 'alert("Error: ' . $e->getMessage() . '");';
-                    echo '</script>';
+                    $msg = $e->getMessage();
                 }
+                echo '<script type="text/javascript">';
+                echo 'alert("' . $msg . '");';
+                echo '</script>';
             }
         }
     }
@@ -124,7 +114,9 @@
         try {
             $stmt->execute();
         } catch (PDOException $e) {
-            echo $e->getMessage();
+            echo '<script type="text/javascript">';
+            echo 'alert("' . $e->getMessage() . '");';
+            echo '</script>';
         }
     }
 
@@ -143,28 +135,24 @@
                 $str .= substr($key, 2) . " = :$key, ";
             }
             $str = substr($str, 0, -2);
-            echo $str;
             $stmt = $conn->prepare(appendWHERE($str, $old));
             bindCols($stmt, $updated);
             bindCols($stmt, $old);
-            // try {
-            //     $stmt->execute();
-            // } catch (PDOException) {
-            //     echo "Can't modify the value of the foreign key supp_id while it exists as the value of supp_id in the supplier table.";
-            // }
             try {
                 $stmt->execute();
             } catch (PDOException $e) {
-                if ($e->getCode() === '23000') {
-                    // echo "Can't modify the value of supp_id while it exists as the value of the foreign key of some row in the product table.";
-                    echo '<script type="text/javascript">';
-                    echo 'alert("Delete failed: can not change Product ID because it is used as a foreign key");';
-                    echo '</script>';
+                $msg;
+                $errorInfo = $e->errorInfo;
+                if ($errorInfo[0] == '23000' && $errorInfo[1] == '1452') {
+                    $msg = "Cannot update a child row: the value of foreign key Supplier ID matches the value of the primary key it references and should not be changed.";
+                } else if ($errorInfo[0] == '23000' && $errorInfo[1] == '1062') {
+                    $msg = $errorInfo[2] . ". Primary key (Product ID, Supplier ID) must be unique.";
                 } else {
-                    echo '<script type="text/javascript">';
-                    echo 'alert("Error: ' . $e->getMessage() . '");';
-                    echo '</script>';
+                    $msg = $e->getMessage();
                 }
+                echo '<script type="text/javascript">';
+                echo 'alert("' . $msg . '");';
+                echo '</script>';
             }
         }
     }
@@ -194,13 +182,6 @@
         <input type="submit" value="Search product table">
     </form>
 
-    <!-- Search results -->
-    <?php
-    // if (isset($_POST['searched_supp'])) {
-
-    // }
-    ?>
-
     <!-- Display inventory table -->
     <h3>Inventory</h3>
     <table>
@@ -214,7 +195,6 @@
         </tr>
 
         <?php
-        // phpcs:disable PEAR.Commenting
         $stmt = $conn->query(
             "SELECT prod_id, prod_name, quantity, price, status, supp_name 
             FROM product JOIN supplier ON product.supp_id = supplier.supp_id"

@@ -87,7 +87,6 @@
         $stmt = $conn->prepare(appendWHERE("SELECT * FROM supplier", $a));
         bindCols($stmt, $a);
         $stmt->execute();
-        // echo '<input type="hidden" name="supp_rows" value="' . $stmt->rowCount() . '">';
         formatRows($stmt);
         ?>
     </table>
