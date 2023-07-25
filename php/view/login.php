@@ -51,7 +51,7 @@
 <body>
     <h1>CP476 Group Project</h1>
     <div class="login-form">
-        <form action="index.php" method="POST">
+        <form action="user.php" method="POST">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>

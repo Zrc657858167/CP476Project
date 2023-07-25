@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Main Page</title>
     <style>
@@ -39,15 +38,15 @@
     <h3>Supplier</h3>
     <table>
         <!-- Return home form -->
-        <form action=user.php method="POST">
+        <form action="user.php" method="POST">
             Return to home <input type="submit" value="Home">
-            <input type="hidden" name="supp_home" value="yes">
+            <input type="hidden" name="action" value="supp_home">
         </form>
 
         <!-- Delete current selection form -->
-        <form action=user.php method="POST">
+        <form action="user.php" method="POST">
             Delete current selection <input type="submit" value="Delete">
-            <input type="hidden" name="supp_deleted" value="yes">
+            <input type="hidden" name="action" value="supp_deleted">
             <?php
             // phpcs:disable PEAR.Commenting         
             echo '<input type="hidden" name="supp_id" value="' . $_POST['supp_id'] . '">';
@@ -59,7 +58,7 @@
         </form>
 
         <!-- Update current selection form -->
-        <form action=user.php method="POST">
+        <form action="user.php" method="POST">
             <tr>
                 <td><input type="text" name="u_supp_id" placeholder="Supplier ID" maxlength=4></td>
                 <td><input type="text" name="u_supp_name" placeholder="Supplier name" maxlength=35></td>
@@ -75,7 +74,7 @@
             echo '<input type="hidden" name="phone" value="' . $_POST['phone'] . '">';
             echo '<input type="hidden" name="email" value="' . $_POST['email'] . '">';
             ?>
-            <input type="hidden" name="supp_updated" value="supplier">
+            <input type="hidden" name="action" value="supp_updated">
         </form>
         <tr>
             <th>Supplier ID</th>
@@ -87,16 +86,9 @@
 
         <!-- Display current selection -->
         <?php
-        require_once "init.php";
-        $a = array();
-        $keys = array('supp_id', 'supp_name', 'address', 'phone', 'email');
-        assocAppend($a, $_POST, $keys);
-        $stmt = $conn->prepare(appendWHERE("SELECT * FROM supplier", $a));
-        bindCols($stmt, $a);
-        $stmt->execute();
+        // $stmt comes index.php, which is the file that includes this one
         formatRows($stmt);
         ?>
     </table>
 </body>
-
 </html>

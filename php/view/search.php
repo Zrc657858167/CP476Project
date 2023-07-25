@@ -37,7 +37,7 @@
 <h1>CP476 Group Project</h1>
 
 <!-- Search supplier form -->
-<form action="index.php" method="POST">
+<form action="user.php" method="POST">
     <input type="text" name="supp_id" placeholder="Supplier ID" maxlength=4>
     <input type="text" name="supp_name" placeholder="Supplier name" maxlength=35>
     <input type="text" name="address" placeholder="Address" maxlength=35>
@@ -48,7 +48,7 @@
 </form>
 
 <!--Search product form -->
-<form action="index.php" method="POST">
+<form action="user.php" method="POST">
     <input type="text" name="prod_id" placeholder="Product ID" maxlength=4>
     <input type="text" name="prod_name" placeholder="Product name" maxlength=20>
     <input type="text" name="description" placeholder="Description" maxlength=35>
